@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class FieldTest {
-    static final int VERTICAL_ORIENTAL = 1;
+    static final String VERTICAL_ORIENTAL = "1";
     static final int HORIZONTAL_ORIENTAL = 2;
 
     @Test
@@ -13,7 +13,7 @@ class FieldTest {
         List<Ship> ships = new ArrayList<>();
 
         String startShipPosition = "1 1";
-        String oriental = String.valueOf(VERTICAL_ORIENTAL);
+        String oriental = VERTICAL_ORIENTAL;
         int sizeShip = 4;
 
         Ship ship = new Ship(startShipPosition, oriental, sizeShip);

@@ -4,7 +4,7 @@ import java.util.Set;
 public class Ship {
     private final Set<Coordinate> shipPosition = new HashSet<>();
     private int countHit = 0;
-    static final int VERTICAL_ORIENTAL = 1;
+    static String VERTICAL_ORIENTAL = "1";
 
     public Ship(String startShipPosition, String oriental, int sizeShip) {
         String[] startShipPositionArr = startShipPosition.split(" ");

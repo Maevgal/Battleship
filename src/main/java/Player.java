@@ -3,6 +3,7 @@ import java.util.Scanner;
 public class Player {
     private final String playerName;
     private final Field field;
+    static String VERTICAL_ORIENTAL = "1";
 
     public Player(String playerName) {
         this.playerName = playerName;
@@ -35,7 +36,7 @@ public class Player {
                             "2 - по горизонтали");
                     oriental = scanner.nextLine();
                 } else {
-                    oriental = "1";
+                    oriental = VERTICAL_ORIENTAL;
                 }
                 try {
                     field.addShip(startShipPosition, oriental, sizeShip);
@@ -48,6 +49,34 @@ public class Player {
             count++;
             sizeShip--;
         }
+    }
+
+    public boolean playerHit(Player player) {
+        player.showFieldWitoutShip();
+        Scanner scanner = new Scanner(System.in);
+        boolean hit = true;
+        while (hit) {
+            String answer = scanner.nextLine();
+            String[] coordinate = answer.split(" ");
+            int x = Integer.parseInt(coordinate[0]);
+            int y = Integer.parseInt(coordinate[1]);
+            try {
+                hit = player.tryToHit(x, y);
+            } catch (GameExeption e) {
+                System.out.println(e.getMessage());
+            }
+            if (hit) {
+                //проверка на конец игры
+                if (player.isLose()) {
+                    return true;
+                } else {
+                    System.out.println("Попал. Стреляй еще раз");
+                }
+            } else {
+                System.out.println("Мимо. Передай игру игроку %s".formatted(player.getPlayerName()));
+            }
+        }
+        return false;
     }
 
     public void showFieldWitoutShip() {

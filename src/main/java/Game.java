@@ -3,8 +3,6 @@ import java.util.Scanner;
 public class Game {
     private Player player1;
     private Player player2;
-    static final int VERTICAL_ORIENTAL = 1;
-    static final int HORIZONTAL_ORIENTAL = 2;
 
     public void start() {
         //создать игроков
@@ -27,12 +25,12 @@ public class Game {
                 .formatted(player1.getPlayerName()));
         boolean isLose = false;
         while (!isLose) {
-            isLose = playerHit(player2);
+            isLose = player1.playerHit(player2);
             if (isLose) {
                 System.out.println("Игра окончена, победил %s".formatted(player1.getPlayerName()));
                 return;
             }
-            isLose = playerHit(player1);
+            isLose = player2.playerHit(player1);
             if (isLose) {
                 System.out.println("Игра окончена, победил %s".formatted(player2.getPlayerName()));
                 return;
@@ -40,31 +38,5 @@ public class Game {
         }
     }
 
-    private boolean playerHit(Player player) {
-        player.showFieldWitoutShip();
-        Scanner scanner = new Scanner(System.in);
-        boolean hit = true;
-        while (hit) {
-            String answer = scanner.nextLine();
-            String[] coordinate = answer.split(" ");
-            int x = Integer.parseInt(coordinate[0]);
-            int y = Integer.parseInt(coordinate[1]);
-            try {
-                hit = player.tryToHit(x, y);
-            } catch (GameExeption e) {
-                System.out.println(e.getMessage());
-            }
-            if (hit) {
-                //проверка на конец игры
-                if (player.isLose()) {
-                    return true;
-                } else {
-                    System.out.println("Попал. Стреляй еще раз");
-                }
-            } else {
-                System.out.println("Мимо. Передай игру игроку %s".formatted(player.getPlayerName()));
-            }
-        }
-        return false;
-    }
+
 }
