@@ -12,8 +12,8 @@ class FieldTest {
     void addShip() throws GameExeption, NoSuchFieldException, IllegalAccessException {
         List<Ship> ships = new ArrayList<>();
 
-        String startShipPosition = "1 1";
-        String oriental = VERTICAL_ORIENTAL;
+        Coordinate startShipPosition = new Coordinate(1, 1);
+        Orientation oriental = Orientation.VERTICAL;
         int sizeShip = 4;
 
         Ship ship = new Ship(startShipPosition, oriental, sizeShip);

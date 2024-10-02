@@ -1,42 +1,34 @@
-import java.util.Scanner;
-
 public class Game {
     private Player player1;
     private Player player2;
+    private final ConsoleUserInterface consoleUserInterface;
 
-    public void start() {
-        //создать игроков
-        System.out.println("Игрок 1 введи свое имя");
-        player1 = createPlayer();
-        player1.createShips();
-        System.out.println("Игрок 2 введи свое имя");
-        player2 = createPlayer();
-        player2.createShips();
+    public Game() {
+        this.consoleUserInterface = new ConsoleUserInterface();
     }
 
-    private Player createPlayer() {
-        Scanner scanner = new Scanner(System.in);
-        return new Player(scanner.nextLine());
+    public void start() {
+        //создание игроков
+        player1 = new Player(consoleUserInterface);
+        player1.inizialize(1);
+        player2 = new Player(consoleUserInterface);
+        player2.inizialize(2);
     }
 
     public void playGame() throws GameExeption {
-        System.out.println(("Игроки расставили свои корабли, приступим к игре. Игрок %s введи через пробел " +
-                "координаты для удара")
-                .formatted(player1.getPlayerName()));
-        boolean isLose = false;
-        while (!isLose) {
-            isLose = player1.playerHit(player2);
+        consoleUserInterface.showMessage("Игроки расставили свои корабли, приступим к игре.");
+
+        while (true) {
+            boolean isLose = player1.playerHit(player2);
             if (isLose) {
-                System.out.println("Игра окончена, победил %s".formatted(player1.getPlayerName()));
+                consoleUserInterface.showMessage("Игра окончена, победил %s".formatted(player1.getPlayerName()));
                 return;
             }
             isLose = player2.playerHit(player1);
             if (isLose) {
-                System.out.println("Игра окончена, победил %s".formatted(player2.getPlayerName()));
+                consoleUserInterface.showMessage("Игра окончена, победил %s".formatted(player2.getPlayerName()));
                 return;
             }
         }
     }
-
-
 }

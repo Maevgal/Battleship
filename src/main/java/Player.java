@@ -1,18 +1,18 @@
 import java.util.Scanner;
 
 public class Player {
-    private final String playerName;
+    private String playerName;
     private final Field field;
-    static String VERTICAL_ORIENTAL = "1";
+    private final ConsoleUserInterface consoleUserInterface;
 
-    public Player(String playerName) {
-        this.playerName = playerName;
+    public Player(ConsoleUserInterface consoleUserInterface) {
+        this.consoleUserInterface = consoleUserInterface;
         this.field = new Field();
     }
 
-    public Player(String playerName, Field field) {
-        this.playerName = playerName;
-        this.field = field;
+    public void inizialize(int numberPlayer) {
+        this.playerName = consoleUserInterface.getString("Игрок %s введи свое имя".formatted(numberPlayer));
+        createShips();
     }
 
     public String getPlayerName() {
@@ -26,23 +26,23 @@ public class Player {
         int sizeShip = 4;
         for (int i = 0; count < 5; i++) {
             for (int j = 0; j < count; j++) {
-                System.out.println("%s введи через пробел координаты начала расположения %s-х палубного корабля и нажми enter"
-                        .formatted(playerName, sizeShip));
-                String startShipPosition = scanner.nextLine();
-                String oriental;
+                consoleUserInterface.showMessage(("%s введи через пробел координаты " +
+                        "начала расположения %s-х палубного корабля и нажми enter").formatted(playerName, sizeShip));
+                Coordinate startShipPosition = consoleUserInterface.getCoordinate();
+                Orientation oriental;
                 if (sizeShip > 1) {
-                    System.out.println("Выбери как ты хочешь расположить корабль и нажми enter:" + "\n" +
+                    oriental = consoleUserInterface.getOriental("Выбери как ты хочешь расположить корабль и нажми enter:" + "\n" +
                             "1 - по вертикали" + "\n" +
                             "2 - по горизонтали");
-                    oriental = scanner.nextLine();
                 } else {
-                    oriental = VERTICAL_ORIENTAL;
+                    oriental = Orientation.VERTICAL;
                 }
                 try {
                     field.addShip(startShipPosition, oriental, sizeShip);
-                    field.drawFieldWithShips();
+                    char[][] fieldWithShips = field.getFieldWithShips();
+                    consoleUserInterface.showField(fieldWithShips);
                 } catch (GameExeption e) {
-                    System.out.println(e.getMessage());
+                    consoleUserInterface.showMessage(e.getMessage());
                     j--;
                 }
             }
@@ -51,41 +51,40 @@ public class Player {
         }
     }
 
-    public boolean playerHit(Player player) {
-        player.showFieldWitoutShip();
-        Scanner scanner = new Scanner(System.in);
+    public boolean playerHit(Player enemy) {
+        enemy.showFieldWitoutShip();
         boolean hit = true;
         while (hit) {
-            String answer = scanner.nextLine();
-            String[] coordinate = answer.split(" ");
-            int x = Integer.parseInt(coordinate[0]);
-            int y = Integer.parseInt(coordinate[1]);
+            consoleUserInterface.showMessage("Игрок %s введи через пробел координаты для удара"
+                            .formatted(this.playerName));
+            Coordinate coordinate = consoleUserInterface.getCoordinate();
             try {
-                hit = player.tryToHit(x, y);
+                hit = enemy.tryToHit(coordinate);
             } catch (GameExeption e) {
-                System.out.println(e.getMessage());
+                consoleUserInterface.showMessage(e.getMessage());
             }
             if (hit) {
                 //проверка на конец игры
-                if (player.isLose()) {
+                if (enemy.isLose()) {
                     return true;
                 } else {
-                    System.out.println("Попал. Стреляй еще раз");
+                    consoleUserInterface.showMessage("Попал. Стреляй еще раз");
                 }
             } else {
-                System.out.println("Мимо. Передай игру игроку %s".formatted(player.getPlayerName()));
+                consoleUserInterface.showMessage("Мимо. Передай игру игроку %s".formatted(enemy.getPlayerName()));
             }
         }
         return false;
     }
 
     public void showFieldWitoutShip() {
-        field.show();
+        consoleUserInterface.showField(field.getField());
     }
 
-    public boolean tryToHit(int x, int y) throws GameExeption {
-        Coordinate coordinate = new Coordinate(x, y);
-        return field.tryToHit(coordinate);
+    public boolean tryToHit(Coordinate coordinate) throws GameExeption {
+        boolean result = field.tryToHit(coordinate);
+        consoleUserInterface.showField(field.getField());
+        return result;
     }
 
     public boolean isLose() {

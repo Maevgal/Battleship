@@ -4,19 +4,15 @@ import java.util.Set;
 public class Ship {
     private final Set<Coordinate> shipPosition = new HashSet<>();
     private int countHit = 0;
-    static String VERTICAL_ORIENTAL = "1";
 
-    public Ship(String startShipPosition, String oriental, int sizeShip) {
-        String[] startShipPositionArr = startShipPosition.split(" ");
-        int x = Integer.parseInt(startShipPositionArr[0]);
-        int y = Integer.parseInt(startShipPositionArr[1]);
-        if (oriental.equals(VERTICAL_ORIENTAL)) {
+    public Ship(Coordinate startShipPosition, Orientation oriental, int sizeShip) {
+        if (oriental.equals(Orientation.VERTICAL)) {
             for (int k = 0; k < sizeShip; k++) {
-                shipPosition.add(new Coordinate(x, y + k));
+                shipPosition.add(new Coordinate(startShipPosition.getX(), startShipPosition.getY() + k));
             }
         } else {
             for (int k = 0; k < sizeShip; k++) {
-                shipPosition.add(new Coordinate(x + k, y));
+                shipPosition.add(new Coordinate(startShipPosition.getX() + k, startShipPosition.getY()));
             }
         }
     }

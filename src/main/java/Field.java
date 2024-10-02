@@ -8,7 +8,11 @@ public class Field {
 
     static final int FILED_LENGTH = 10;
 
-    private char[][] field = new char[FILED_LENGTH][FILED_LENGTH];
+    public char[][] getField() {
+        return field;
+    }
+
+    private final char[][] field = new char[FILED_LENGTH][FILED_LENGTH];
 
     //первоночальное поле
     public Field() {
@@ -19,18 +23,7 @@ public class Field {
         }
     }
 
-    public void show() {
-        System.out.println("    0   1   2   3   4   5   6   7   8   9");
-        for (int i = 0; i < FILED_LENGTH; i++) {
-            System.out.print(i + "\t");
-            for (int j = 0; j < FILED_LENGTH; j++) {
-                System.out.print(field[j][i] + "\t");
-            }
-            System.out.println();
-        }
-    }
-
-    public void addShip(String startShipPosition, String oriental, int sizeShip) throws GameExeption {
+    public void addShip(Coordinate startShipPosition, Orientation oriental, int sizeShip) throws GameExeption {
         Ship ship = new Ship(startShipPosition, oriental, sizeShip);
         Set<Coordinate> shipPosition = ship.getShipPosition();
 
@@ -75,18 +68,6 @@ public class Field {
         return fieldWitShips;
     }
 
-    public void drawFieldWithShips() {
-        char[][] fieldWithShips = getFieldWithShips();
-        System.out.println("    0   1   2   3   4   5   6   7   8   9");
-        for (int i = 0; i < FILED_LENGTH; i++) {
-            System.out.print(i + "\t");
-            for (int j = 0; j < FILED_LENGTH; j++) {
-                System.out.print(fieldWithShips[j][i] + "\t");
-            }
-            System.out.println();
-        }
-    }
-
     public boolean tryToHit(Coordinate coordinate) throws GameExeption {
         //в эту точку еще не стреляли?
         if (field[coordinate.getX()][coordinate.getY()] == ' ') {
@@ -95,7 +76,6 @@ public class Field {
             for (Ship ship : ships) {
                 if (ship.checkHit(coordinate)) {
                     field[coordinate.getX()][coordinate.getY()] = 'X';
-                    show();
                     return true;
                 }
             }
@@ -103,7 +83,6 @@ public class Field {
             throw new GameExeption("В данную точку выполняли удар, попробуй снова");
         }
         field[coordinate.getX()][coordinate.getY()] = 'O';
-        show();
         return false;
     }
 
